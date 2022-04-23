@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Class"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:gravity="center"
+        >
+
+    </TextView>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name_text_field"
+        style="@style/TextInputLayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text"
+        app:startIconDrawable="@drawable/ic_baseline_home_24"
+        android:hint="Class Name"
+        android:textColorHint="@color/colorPrimaryDark"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Teacher"
+        android:gravity="center"
+        android:textColor="@color/black"
+
+        app:layout_constraintTop_toBottomOf ="@id/name_text_field"
+
+        />
+
+    <Spinner
+        android:id="@+id/spinner_teacher"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="45dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf ="@id/name_text_field"
+        android:gravity="center"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

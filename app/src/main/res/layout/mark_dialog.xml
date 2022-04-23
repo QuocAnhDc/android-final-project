@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Mark"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:gravity="center"
+        >
+    </TextView>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Student name"
+        android:textStyle="bold"
+        android:textSize="14dp"
+        android:gravity="center"
+        >
+    </TextView>
+
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="date"
+        android:textStyle="italic"
+        android:textSize="14dp"
+        android:gravity="center"
+        >
+    </TextView>
+
+    <Spinner
+        android:id="@+id/spinnerYear"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf ="@id/date"
+        android:gravity="center"
+        />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/math"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="70dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/spinnerYear"
+        app:startIconDrawable="@drawable/ic_math_24"
+        android:hint="Math"
+        android:textColorHint="@color/colorPrimaryDark"
+        style="@style/TextInputLayoutStyle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/math_editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/physic"
+        style="@style/TextInputLayoutStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/math"
+        app:startIconDrawable="@drawable/ic_person_24"
+        android:hint="Physic"
+        android:textColorHint="@color/colorPrimaryDark"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/physic_editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:singleLine="true"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/chemistry"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/physic"
+        app:startIconDrawable="@drawable/ic_chemistry_24"
+        android:hint="Chemistry"
+        android:textColorHint="@color/colorPrimaryDark"
+        style="@style/TextInputLayoutStyle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/chemistry_editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/literature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chemistry"
+        app:startIconDrawable="@drawable/ic_literature_24"
+        android:hint="Literature"
+        android:textColorHint="@color/colorPrimaryDark"
+        style="@style/TextInputLayoutStyle">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/literature_editText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
