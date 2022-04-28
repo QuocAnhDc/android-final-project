@@ -111,7 +111,6 @@ public class FirebaseManager {
                     callBack.onCallBack(false, user);
                 }
             }
-
         });
     }
 
@@ -249,6 +248,7 @@ public class FirebaseManager {
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 if (snapshot.getValue() != null) {
                     callback.onCallback(snapshot.getValue().toString());
                 }
@@ -473,6 +473,29 @@ public class FirebaseManager {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+    }
+
+    public void AddUser(User user,  FirebaseCallBack.ValidateCallBack callback){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(USERS_CHILD);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChild(user.getUsername())){
+                    callback.onCallBack(false, user);
+                }
+                else{
+                    myRef.child(user.getUsername()).setValue(user);
+                    callback.onCallBack(true, user);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, error.toException());
+            }
+        });
+
     }
 
 }
