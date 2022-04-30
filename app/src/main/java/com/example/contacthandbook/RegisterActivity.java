@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.contacthandbook.firebaseManager.FirebaseCallBack;
@@ -23,6 +24,7 @@ public class RegisterActivity extends AppCompatActivity {
     Spinner spinner_role;
     EditText txtMSSV,txtName,txtPass;
     Button btnRegister;
+    TextView textView;
 
     private DatabaseReference mDatabase;
     //We will implement this function later
@@ -42,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         txtName = findViewById(R.id.txtName);
         txtPass = findViewById(R.id.txtPass);
         btnRegister = findViewById(R.id.signInButton);
+        textView = findViewById(R.id.logInButton);
 
         //dang ky
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +52,15 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String role = spinner_role.getSelectedItem().toString();
                 writeNewUser(txtMSSV.getText().toString(),txtPass.getText().toString(),txtName.getText().toString(),role);
+            }
+        });
+
+        // login neu co san tai khoan
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent dashboardIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                RegisterActivity.this.startActivity(dashboardIntent);
             }
         });
     }

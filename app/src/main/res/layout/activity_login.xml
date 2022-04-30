@@ -99,20 +99,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         />
 
-    <TextView
-        android:id="@+id/resetPasswordButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Forgot password?"
-        app:layout_constraintTop_toBottomOf ="@id/signUpButton"
-        android:layout_marginTop="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:textColor="#3498db"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-
 
     <Spinner
         android:id="@+id/spinner_role"
