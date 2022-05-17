@@ -83,7 +83,9 @@ public class ClassDetailActivity extends AppCompatActivity {
             @Override
             public void onCallback(List<Student> students) {
 
+
                     for (Student student : students) {
+                        Log.e("STUDENTID", student.toString());
                         if (student.getClassName().contains(className)) {
                             arraymData.add(student);
                         }

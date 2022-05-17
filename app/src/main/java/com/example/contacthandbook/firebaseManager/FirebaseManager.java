@@ -125,7 +125,11 @@ public class FirebaseManager {
             public void onDataChange(DataSnapshot snapshot) {
                 List<Student> students = new ArrayList<>();
                 for (DataSnapshot studentSnapshot: snapshot.getChildren()) {
-                    Student student = studentSnapshot.getValue(Student.class);
+                    String name =  studentSnapshot.child("name").getValue().toString();
+                    String id = studentSnapshot.child("id").getValue().toString();
+                    String className = studentSnapshot.child("className").getValue().toString();
+                    Student student = new Student(id, name, className);
+                    //Student student = studentSnapshot.getValue(Student.class);
                     students.add(student);
                 }
                 callBack.onCallback(students);
@@ -191,6 +195,10 @@ public class FirebaseManager {
                             for (DataSnapshot child : classSnapshot.getChildren()) {
                                 Log.w("CLASS", child.getValue().toString());
                                 if (child.getKey().toString().equals("Teacher")) {
+
+                                    //Teacher a = ((Teacher) child.getValue());
+
+                                   // Log.e("TEACER OF CLASS", a.toString());
                                     teacher = new Teacher(child.getValue().toString());
                                 } else {
                                     Student student = new Student(child.getKey());
