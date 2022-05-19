@@ -13,12 +13,10 @@
     <string-array name="role">
         <item>Admin</item>
         <item>Student</item>
-        <item>Parents</item>
         <item>Teacher</item>
     </string-array>
     <string-array name="role2">
         <item>Student</item>
-        <item>Parents</item>
         <item>Teacher</item>
     </string-array>
     <string name="title_activity_profile2">Profile2</string>
