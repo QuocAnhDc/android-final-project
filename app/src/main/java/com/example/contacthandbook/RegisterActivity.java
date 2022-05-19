@@ -35,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
         firebaseDatabase = new FirebaseManager(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        String[] roleList = getResources().getStringArray(R.array.role);
+        String[] roleList = getResources().getStringArray(R.array.role2);
         spinner_role = findViewById(R.id.spinner_role);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>
                 (RegisterActivity.this, android.R.layout.simple_spinner_dropdown_item, roleList);

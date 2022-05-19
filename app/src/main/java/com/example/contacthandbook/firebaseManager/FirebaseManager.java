@@ -198,7 +198,7 @@ public class FirebaseManager {
 
                                     //Teacher a = ((Teacher) child.getValue());
 
-                                   // Log.e("TEACER OF CLASS", a.toString());
+                                    // Log.e("TEACER OF CLASS", a.toString());
                                     teacher = new Teacher(child.getValue().toString());
                                 } else {
                                     Student student = new Student(child.getKey());
@@ -507,6 +507,3 @@ public class FirebaseManager {
     }
 
 }
-
-
-
