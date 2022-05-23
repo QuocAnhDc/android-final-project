@@ -32,6 +32,7 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.contacthandbook.CommonFunction;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -39,6 +40,7 @@ public class FeedbackFragment  extends Fragment {
     private static final String PREFS_NAME = "USER_INFO";
     FirebaseManager firebaseManager = new FirebaseManager(getContext());
     FeedbackAdapter adapter;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +56,37 @@ public class FeedbackFragment  extends Fragment {
         super.onActivityCreated(savedInstanceState);
         FloatingActionButton fab = getView().findViewById(R.id.fab);
         User user = getSavedInfo();
+
         if (user.getRole().equals("Admin")) {
             fab.setVisibility(View.GONE);
         }
+        else{
+            firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
+                @Override
+                public void onCallback(String className) {
+                    if(className == null )
+                        fab.setVisibility(View.GONE);
+                    else{
+                        firebaseManager.getClass(className, new FirebaseCallBack.SingleClass() {
+                            @Override
+                            public void onCallback(String teacherId) {
+                                firebaseManager.getTeacher(teacherId, new FirebaseCallBack.SingleTeacher() {
+                                    @Override
+                                    public void onCallback(Teacher teacher) {
+                                        if(teacher == null)
+                                            fab.setVisibility(View.GONE);
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                }
+            });
+
+
+        }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +119,7 @@ public class FeedbackFragment  extends Fragment {
             public void onCallback(String className) {
                 firebaseManager.getAllStudent(new FirebaseCallBack.AllStudentCallBack() {
                     public void onCallback(List<Student> students) {
+                        arraymData.add(className);
                         for (Student student : students) {
                             if (student.getClassName().contains(className)) {
                                 arraymData.add(student.getId());
@@ -190,6 +221,8 @@ public class FeedbackFragment  extends Fragment {
     //load or reload list
     void loadList() {
         User user = getSavedInfo();
+
+
         ArrayList<Feedback> arrayData = new ArrayList<Feedback>();
         //show progressHUD
         KProgressHUD hud = KProgressHUD.create(getContext())
@@ -201,30 +234,44 @@ public class FeedbackFragment  extends Fragment {
 
         RecyclerView recyclerView = getView().findViewById(R.id.feedbackList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        firebaseManager.loadFeedbackAll(new FirebaseCallBack.AllFeedBackCallBack() {
+
+        firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
             @Override
-            public void onCallback(List<Feedback> feedbacks) {
-                for (Feedback feedback : feedbacks) {
-                    if (feedback.getSender().contains(user.getUsername()) || feedback.getReciver().contains(user.getUsername())) {
-                        arrayData.add(feedback);
-                    }
-                }
-                adapter = new FeedbackAdapter(getContext(), arrayData);
-                adapter.setOnItemListenerListener(new FeedbackAdapter.OnItemListener() {
+            public void onCallback(String classNameParam) {
+                firebaseManager.loadFeedbackAll(new FirebaseCallBack.AllFeedBackCallBack() {
                     @Override
-                    public void OnItemClickListener(View view, int position) {
+                    public void onCallback(List<Feedback> feedbacks) {
+                        //String editClass = classNameParam == null ? "" : classNameParam;
+                        for (Feedback feedback : feedbacks) {
+                            if (feedback.getSender().contains(user.getUsername()) || feedback.getReciver().contains(user.getUsername()) ) {
+                                arrayData.add(feedback);
+                            }
+                            else{
+                                if(classNameParam != null && feedback.getReciver().contains(classNameParam)){
+                                    arrayData.add(feedback);
+                                }
+                            }
+                        }
+                        adapter = new FeedbackAdapter(getContext(), arrayData);
+                        adapter.setOnItemListenerListener(new FeedbackAdapter.OnItemListener() {
+                            @Override
+                            public void OnItemClickListener(View view, int position) {
 
-                    }
+                            }
 
-                    @Override
-                    public void OnItemLongClickListener(View view, int position) {
+                            @Override
+                            public void OnItemLongClickListener(View view, int position) {
 
+                            }
+                        });
+                        recyclerView.setAdapter(adapter);
+                        hud.dismiss();
                     }
                 });
-                recyclerView.setAdapter(adapter);
-                hud.dismiss();
             }
         });
+
+
     }
 
 

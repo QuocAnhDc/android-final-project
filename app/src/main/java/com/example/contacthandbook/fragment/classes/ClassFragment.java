@@ -127,10 +127,6 @@ public class ClassFragment extends Fragment {
                                         dialog.dismiss();
                                         showDialog(classes.get(position), false);
                                     })
-                                    .addButton("Delete", -1, -1, CFAlertDialog.CFAlertActionStyle.NEGATIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
-                                        dialog.dismiss();
-                                        Toast.makeText(getContext(), "Deleted", Toast.LENGTH_LONG).show();
-                                    })
                                     .addButton("CANCEL", -1, -1, CFAlertDialog.CFAlertActionStyle.DEFAULT, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
                                         dialog.dismiss();
                                     });

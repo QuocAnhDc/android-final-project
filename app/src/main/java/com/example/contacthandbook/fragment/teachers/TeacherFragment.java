@@ -146,7 +146,12 @@ public class TeacherFragment extends Fragment {
                 .setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT)
                 .setHeaderView(dialogLayout)
                 .addButton(buttonTitle, -1, -1, CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
-                    if (!id.equals("") && !name.equals("") && !classStr.equals("")) {
+
+                    String inputId = id.getText().toString();
+                    String inputName = name.getText().toString();
+                    String inputClass = classStr.getText().toString();
+
+                    if (!inputId.equals("") && !inputName.equals("") && !inputClass.equals("")) {
                         teacher.setId(id.getText().toString());
                         teacher.setName(name.getText().toString());
                         teacher.setClassName(classStr.getText().toString());
@@ -163,6 +168,9 @@ public class TeacherFragment extends Fragment {
                                 }
                             }
                         });
+                    }
+                    else{
+                        CommonFunction.showCommonAlert(getContext(), "You must fulfill all required information", "Let me check");
                     }
 
                 });

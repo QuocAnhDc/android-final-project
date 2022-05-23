@@ -35,6 +35,10 @@ public interface FirebaseCallBack {
         void onCallback(boolean success);
     }
 
+    interface DeleteStudentCallBack {
+        void onCallback(boolean success);
+    }
+
     //Teacher child
     interface AllTeacherCallBack {
         void onCallback(List<Teacher> teachers);
@@ -78,6 +82,10 @@ public interface FirebaseCallBack {
 
     interface ClassNameCallback {
         void onCallback(String className);
+    }
+
+    interface  DeleteClassCallback {
+        void onCallback(boolean success);
     }
 }
 

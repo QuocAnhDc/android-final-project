@@ -100,7 +100,11 @@ public class StudentFragment extends Fragment {
                 .setHeaderView(dialogLayout)
                 .addButton(buttonTitle, -1, -1, CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
 
-                    if (!id.equals("") && !name.equals("") && !classStr.equals("")) {
+                    String inputId = id.getText().toString();
+                    String inputName = name.getText().toString();
+                    String inputClass = classStr.getText().toString();
+
+                    if (!inputId.equals("") && !inputName.equals("") && !inputClass.equals("")) {
                         student.setId(id.getText().toString());
                         student.setName(name.getText().toString());
                         student.setClassName(classStr.getText().toString());
@@ -117,6 +121,9 @@ public class StudentFragment extends Fragment {
                                 }
                             }
                         });
+                    }
+                    else{
+                        CommonFunction.showCommonAlert(getContext(), "you must fulfill all required information", "Let me check");
                     }
 
                 });
@@ -157,7 +164,7 @@ public class StudentFragment extends Fragment {
                                 })
                                 .addButton("Delete", -1, -1, CFAlertDialog.CFAlertActionStyle.NEGATIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
                                     dialog.dismiss();
-                                    Toast.makeText(getContext(), "Deleted", Toast.LENGTH_LONG).show();
+                                    deleteStudent(student_);
                                 })
                                 .addButton("CANCEL", -1, -1, CFAlertDialog.CFAlertActionStyle.DEFAULT, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
                                     dialog.dismiss();
@@ -171,6 +178,22 @@ public class StudentFragment extends Fragment {
             }
         });
 
+    }
 
+
+    void deleteStudent(Student student){
+        firebaseManager.deleteStudent(student, new FirebaseCallBack.DeleteStudentCallBack() {
+            @Override
+            public void onCallback(boolean success) {
+                if(success){
+                    CommonFunction.showCommonAlert(getContext(), "Delete success", "OK");
+                    adapter.notifyDataSetChanged();
+                    loadList();
+                }
+                else{
+                    CommonFunction.showCommonAlert(getContext(), "Some thing was wrong", "OK");
+                }
+            }
+        });
     }
 }

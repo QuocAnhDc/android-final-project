@@ -167,13 +167,30 @@ public class FirebaseManager {
         addStudentAccountRef.setValue(stu);
 
         // Add student to class
-        DatabaseReference addStudentClass = database.getReference(CLASS_CHILD).child(student.getClassName()).child(student.getId());
-        addStudentClass.setValue("student");
+//        DatabaseReference addStudentClass = database.getReference(CLASS_CHILD).child(student.getClassName()).child(student.getId());
+//        addStudentClass.setValue("student");
 
-        //Add parent account
-        DatabaseReference addParentAccountRef = database.getReference(USERS_CHILD).child(student.getId());
-        User parents = new User(student.getId(), "1", student.getName(), "Parents");
-        addParentAccountRef.setValue(parents);
+    }
+
+    public void deleteStudent(Student student, FirebaseCallBack.DeleteStudentCallBack callBack ){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // delete student
+        DatabaseReference deleteStudentRef = database.getReference(STUDENT_CHILD).child(student.getId());
+        deleteStudentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                deleteStudentRef.removeValue();
+                callBack.onCallback(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callBack.onCallback(false);
+            }
+        });
+
+        DatabaseReference addStudentAccountRef = database.getReference(USERS_CHILD).child(student.getId());
+        addStudentAccountRef.removeValue();
     }
 
 
@@ -272,6 +289,26 @@ public class FirebaseManager {
         });
     }
 
+    public void deleteClass(String className, FirebaseCallBack.DeleteClassCallback callback){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        // delete class
+        DatabaseReference deleteClassRef = database.getReference(CLASS_CHILD).child(className);
+        deleteClassRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                deleteClassRef.removeValue();
+                callback.onCallback(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onCallback(false);
+            }
+        });
+
+        //reset className in student and teacher
+
+    }
 
     //---Teachers child
 

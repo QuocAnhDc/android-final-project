@@ -23,6 +23,7 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
     private LayoutInflater mInflater;
     private OnItemListener onItemListener;
     FirebaseManager firebaseManager ;
+
     // data is passed into the constructor
     public FeedbackAdapter(Context context, List<Feedback> data) {
         this.mInflater = LayoutInflater.from(context);
@@ -50,15 +51,25 @@ public class FeedbackAdapter extends RecyclerView.Adapter<FeedbackAdapter.ViewHo
         firebaseManager.getUser(feedback.getSender(), new FirebaseCallBack.UserCallBack() {
             @Override
             public void onCallback(User user) {
-                holder.sender.setText("From: " + user.getName());
+                if(user == null){
+                    holder.sender.setText("Undentify teacher");
+                }
+                else {
+                    holder.sender.setText("From: " + user.getName());
+                }
             }
         });
+
         firebaseManager.getUser(feedback.getReciver(), new FirebaseCallBack.UserCallBack() {
             @Override
             public void onCallback(User user) {
-                holder.destinationTextView.setText("To: " + user.getName());
+                if(user == null)
+                    holder.destinationTextView.setText("To: " +feedback.getReciver() );
+                else
+                    holder.destinationTextView.setText("To: " + user.getName());
             }
         });
+
 
         holder.itemView.setId(position);
     }

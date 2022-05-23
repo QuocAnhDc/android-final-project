@@ -198,8 +198,6 @@ public class MainActivity  extends AppCompatActivity  {
                         notificationList,
                         classList,
                         new DividerDrawerItem(),
-                        feedback,
-                        new DividerDrawerItem(),
                         changePassword,
                         logout
                 )

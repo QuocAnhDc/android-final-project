@@ -68,7 +68,7 @@ public class ClassRecyclerAdapter extends RecyclerView.Adapter<ClassRecyclerAdap
         firebaseManager.getTeacher(classes.getTeacher().getId(), new FirebaseCallBack.SingleTeacher() {
             @Override
             public void onCallback(Teacher teacher) {
-                if (teacher.getName() == null && teacher.getName().equals("")) {
+                if (teacher == null  || (teacher.getName() == null && teacher.getName().equals(""))) {
                     holder.teacherName.setText("No Teacher");
                 }
                 else {

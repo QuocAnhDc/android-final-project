@@ -64,7 +64,7 @@ public class ClassDetailActivity extends AppCompatActivity {
         firebaseManager.getTeacher(teacherId, new FirebaseCallBack.SingleTeacher() {
             @Override
             public void onCallback(Teacher teacher) {
-                if (teacher.getName().equals("")) {
+                if (teacher == null || teacher.getName().equals("")) {
                     textViewTeacher.setText("No Teacher");
                 }
                 else {
