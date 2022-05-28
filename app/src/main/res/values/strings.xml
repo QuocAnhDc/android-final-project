@@ -9,7 +9,11 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-
+    <string name="channel_name_feedback">feedback</string>
+    <string name="channel_Id_feedback">Feedbacks</string>
+    <string name="channel_Id_notification">Notification</string>
+    <string name="channel_name_notification">Notification_show</string>
+    <string name="feedback_intent">FeedBack_Intent</string>
     <string-array name="role">
         <item>Admin</item>
         <item>Student</item>

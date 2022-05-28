@@ -67,6 +67,10 @@ public interface FirebaseCallBack {
         void onCallback(List<Feedback> Feedback);
     }
 
+    interface FeedBackCallBack{
+        void onCallback(Feedback feedback);
+    }
+
     //Classes child
     interface  AllClassName {
         void onCallback(List<Classes> classes);
@@ -88,5 +92,6 @@ public interface FirebaseCallBack {
         void onCallback(boolean success);
     }
 }
+
 
 

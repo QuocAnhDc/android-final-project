@@ -1,7 +1,11 @@
 package com.example.contacthandbook;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +32,7 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -59,6 +64,15 @@ public class MainActivity  extends AppCompatActivity  {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         searchView = findViewById(R.id.search_view);
+
+        Log.d("Service","Start Service");
+        Intent intent = new Intent(this, ForeGroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }
+
+        startService(intent);
+
         User user = getSavedInfo();
         getSupportActionBar().setTitle("Home");
         // Create the AccountHeader
@@ -98,8 +112,37 @@ public class MainActivity  extends AppCompatActivity  {
             teacherAction(headerResult);
             loadFragment(new NotificationFragment());
         }
+
+        Intent fbNotify = getIntent();
+        String intent_name = fbNotify.getStringExtra(String.valueOf(R.string.feedback_intent));
+
+        if(intent_name != null && intent_name.equals("feedbacks")){
+            Log.e("INTENT FB", intent_name);
+            Fragment feedbacks = new FeedbackFragment();
+            loadFragment(feedbacks);
+        }
+
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(this, ForeGroundService.class);
+        startService(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent fbNotify = getIntent();
+        String intent_name = fbNotify.getStringExtra(String.valueOf(R.string.feedback_intent));
+
+        if(intent_name != null && intent_name.equals("feedbacks")){
+            Log.e("INTENT FB", intent_name);
+            Fragment feedbacks = new FeedbackFragment();
+            loadFragment(feedbacks);
+        }
+    }
 
     @Override
     public void onBackPressed()

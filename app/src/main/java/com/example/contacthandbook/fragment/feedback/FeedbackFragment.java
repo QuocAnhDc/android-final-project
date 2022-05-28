@@ -1,6 +1,10 @@
 package com.example.contacthandbook.fragment.feedback;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +14,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,13 +27,13 @@ import com.example.contacthandbook.firebaseManager.FirebaseCallBack;
 import com.example.contacthandbook.firebaseManager.FirebaseManager;
 import com.example.contacthandbook.model.Classes;
 import com.example.contacthandbook.model.Feedback;
-import com.example.contacthandbook.model.Notification;
 import com.example.contacthandbook.model.NotifyDestination;
 import com.example.contacthandbook.model.Student;
 import com.example.contacthandbook.model.Teacher;
 import com.example.contacthandbook.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
@@ -35,15 +41,26 @@ import java.util.List;
 import com.example.contacthandbook.CommonFunction;
 
 import static android.content.Context.MODE_PRIVATE;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class FeedbackFragment  extends Fragment {
     private static final String PREFS_NAME = "USER_INFO";
     FirebaseManager firebaseManager = new FirebaseManager(getContext());
     FeedbackAdapter adapter;
-
+    User user;
+    String className = "";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = getSavedInfo();
+        firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
+            @Override
+            public void onCallback(String classNameParam) {
+                className= classNameParam;
+            }
+        });
+
+
     }
 
     @Override
@@ -95,6 +112,28 @@ public class FeedbackFragment  extends Fragment {
         });
         loadList();
     }
+
+    public void notification(Feedback feedback){
+        NotificationManager nm = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = android.app.NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("feedbacks", "feedbackNotification",importance );
+            channel.setDescription("notify when feedbacks change");
+            nm = getSystemService(getContext(),NotificationManager.class);
+            nm.createNotificationChannel(channel);
+        }
+
+        Notification nf = new NotificationCompat.Builder(getContext(), "feedbacks")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(feedback.getTitle())
+                .setContentText(feedback.getContent())
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(feedback.getContent()))
+                .build();
+        NotificationManagerCompat cp = NotificationManagerCompat.from(getContext());
+        cp.notify(1, nf);
+    }
+
 
     public User getSavedInfo() {
         User user = new User();

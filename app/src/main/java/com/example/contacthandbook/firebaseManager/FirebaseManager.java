@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.contacthandbook.MainActivity;
 import com.example.contacthandbook.fragment.home.HomeFragment;
@@ -16,6 +17,7 @@ import com.example.contacthandbook.model.NotifyDestination;
 import com.example.contacthandbook.model.Student;
 import com.example.contacthandbook.model.Teacher;
 import com.example.contacthandbook.model.User;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -496,6 +498,38 @@ public class FirebaseManager {
         });
     }
 
+    public void listenFeedBackAdded(FirebaseCallBack.FeedBackCallBack callBack){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference feedbackDtb = database.getReference(FEEDBACK_CHILD);
+        feedbackDtb.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Feedback fb = snapshot.getValue(Feedback.class);
+                callBack.onCallback(fb);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     public void loadFeedbackAll(FirebaseCallBack.AllFeedBackCallBack callBack) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -512,12 +546,14 @@ public class FirebaseManager {
 
             }
 
+
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+
     }
 
     public void AddUser(User user,  FirebaseCallBack.ValidateCallBack callback){

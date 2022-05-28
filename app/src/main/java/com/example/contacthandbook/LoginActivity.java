@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (isValidate) {
                     // show dashboard
                     CheckBox remember = findViewById(R.id.remember);
-                    saveInfo(user, remember.isChecked());
+                    saveInfo(user, true);
                     Intent dashboardIntent = new Intent(LoginActivity.this, MainActivity.class);
                     LoginActivity.this.startActivity(dashboardIntent);
                 }
