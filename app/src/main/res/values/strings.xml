@@ -14,6 +14,10 @@
     <string name="channel_Id_notification">Notification</string>
     <string name="channel_name_notification">Notification_show</string>
     <string name="feedback_intent">FeedBack_Intent</string>
+    <string name="feedback_intent_value">Feedbacks</string>
+    <string name="notification_intent_name">NotificationsName</string>
+    <string name="notification_intent_value">NotificationsValue</string>
+
     <string-array name="role">
         <item>Admin</item>
         <item>Student</item>

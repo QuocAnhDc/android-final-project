@@ -1,48 +1,38 @@
-package com.example.contacthandbook;
+package com.example.contacthandbook.services;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
-import static java.security.AccessController.getContext;
-
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentProvider;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ParseException;
 import android.os.Build;
 import android.os.IBinder;
-import android.text.NoCopySpan;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.navigation.NavDeepLinkBuilder;
 
+
+import com.example.contacthandbook.R;
+import com.example.contacthandbook.broadcastReceiver.FeedbacksReceiver;
 import com.example.contacthandbook.firebaseManager.FirebaseCallBack;
 import com.example.contacthandbook.firebaseManager.FirebaseManager;
-import com.example.contacthandbook.fragment.feedback.FeedbackFragment;
 import com.example.contacthandbook.model.Feedback;
 import com.example.contacthandbook.model.User;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.android.gms.common.server.response.FastParser;
 
-import java.security.Provider;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-public class ForeGroundService extends Service {
+
+public class FeedbacksNotificationService extends Service {
+
     private static final String PREFS_NAME = "USER_INFO";
-    public String userName;
     public String className;
     public Feedback fb =null;
     @Nullable
@@ -60,26 +50,34 @@ public class ForeGroundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopSelf();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //return super.oấyStartCommand(intent, flags, startId);
-        Log.e("OnCammand", "start foreground");
+       // Log.e("OnCammand", "start foreground");
         User user = getSavedInfo();
-        if(user!= null){
+        if(user != null && !user.getUsername().equals("noUser")){
             feedbackAdded(user);
         }
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            startMyOwnForeground();
-        }
         else{
-            startForeground(1, new Notification());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(flags);
+            }
         }
+
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            startMyOwnForeground();
+//        }
+//        else{
+//            startForeground(1, new Notification());
+//        }
 
         return START_NOT_STICKY;
     }
+
+
 
     public void createChannel(String channelId, String channelName){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -94,29 +92,50 @@ public class ForeGroundService extends Service {
     public User getSavedInfo() {
         User user = new User();
         SharedPreferences sharedPref = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        user.setUsername(sharedPref.getString("username", "contact"));
+        user.setUsername(sharedPref.getString("username", "noUser"));
         user.setName(sharedPref.getString("name", "Contact Handbook"));
         user.setRole(sharedPref.getString("role", "student"));
         return  user;
     }
 
     public void feedbackAdded(User user){
-        FirebaseManager firebaseManager = new FirebaseManager(this);
-        firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
-            @Override
-            public void onCallback(String className) {
-                if(className != null){
-                    firebaseManager.listenFeedBackAdded(new FirebaseCallBack.FeedBackCallBack() {
-                        @Override
-                        public void onCallback(Feedback feedback) {
-                            if(feedback.getReciver().equals(user.getUsername()) || feedback.getReciver().equals(className)){
-                                sendFeedbackNotfication(feedback);
+        if(user != null){
+            FirebaseManager firebaseManager = new FirebaseManager(this);
+            firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
+                @Override
+                public void onCallback(String className) {
+                    if(className != null){
+                        firebaseManager.listenFeedBackAdded(new FirebaseCallBack.FeedBackCallBack() {
+                            @Override
+                            public void onCallback(Feedback feedback) {
+                                if(feedback.getReciver().equals(user.getUsername()) || feedback.getReciver().equals(className)){
+                                    Date current = new Date();
+                                    SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy");
+                                    try{
+                                        Date fbDate = formatter.parse(feedback.getDateStr());
+                                        formatter.applyPattern("yyyy-MM-dd");
+                                        String format_fbDate = formatter.format(fbDate);
+                                        String format_currentDate = formatter.format(current);
+
+                                        if(format_currentDate.equals(format_fbDate)){
+                                            sendFeedbackNotfication(feedback);
+                                        }
+                                    }
+                                    catch( java.text.ParseException e){
+                                        Log.e("ERROR PARSE DATE", e.toString());
+                                    }
+                                }
+
                             }
-                        }
-                    });
+
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
+        else{
+
+        }
 
     }
 
@@ -125,10 +144,12 @@ public class ForeGroundService extends Service {
         String channel_name ="Feedback Notifications";
         createChannel(channel_id, channel_name);
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(String.valueOf(R.string.feedback_intent), "feedbacks");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent, PendingIntent.FLAG_ONE_SHOT);
+        Intent intent_notify = new Intent(this, FeedbacksReceiver.class);
+        intent_notify.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent_notify.putExtra(getString(R.string.feedback_intent), getString(R.string.feedback_intent_value));
+        int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,uniqueInt,intent_notify,0);
+
 
         Notification nf = new NotificationCompat.Builder(this, channel_id)
                 .setSmallIcon(R.mipmap.ic_launcher)

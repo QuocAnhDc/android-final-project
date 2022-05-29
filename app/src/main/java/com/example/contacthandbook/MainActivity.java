@@ -1,14 +1,13 @@
 package com.example.contacthandbook;
 
-import android.content.Context;
+import static android.app.PendingIntent.getActivity;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.crowdfire.cfalertdialog.CFAlertDialog;
@@ -21,6 +20,7 @@ import com.example.contacthandbook.fragment.notification.NotificationFragment;
 import com.example.contacthandbook.fragment.students.StudentFragment;
 import com.example.contacthandbook.fragment.teachers.TeacherFragment;
 import com.example.contacthandbook.model.User;
+import com.example.contacthandbook.services.FeedbacksNotificationService;
 import com.google.android.material.textfield.TextInputEditText;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -65,8 +65,8 @@ public class MainActivity  extends AppCompatActivity  {
         setSupportActionBar(toolbar);
         searchView = findViewById(R.id.search_view);
 
-        Log.d("Service","Start Service");
-        Intent intent = new Intent(this, ForeGroundService.class);
+        //Log.d("Service","Start Service");
+        Intent intent = new Intent(this, FeedbacksNotificationService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent);
         }
@@ -113,36 +113,30 @@ public class MainActivity  extends AppCompatActivity  {
             loadFragment(new NotificationFragment());
         }
 
-        Intent fbNotify = getIntent();
-        String intent_name = fbNotify.getStringExtra(String.valueOf(R.string.feedback_intent));
-
-        if(intent_name != null && intent_name.equals("feedbacks")){
-            Log.e("INTENT FB", intent_name);
-            Fragment feedbacks = new FeedbackFragment();
-            loadFragment(feedbacks);
-        }
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent intent = new Intent(this, ForeGroundService.class);
+        Intent intent = new Intent(this, FeedbacksNotificationService.class);
         startService(intent);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Intent fbNotify = getIntent();
-        String intent_name = fbNotify.getStringExtra(String.valueOf(R.string.feedback_intent));
 
-        if(intent_name != null && intent_name.equals("feedbacks")){
-            Log.e("INTENT FB", intent_name);
+        Intent feedbackIntent = getIntent();
+        String intent_value = feedbackIntent.getStringExtra(getString(R.string.feedback_intent));
+
+        if(intent_value != null && intent_value.equals(getString(R.string.feedback_intent_value))){
+            //Log.e("INTENT FB", intent_value);
             Fragment feedbacks = new FeedbackFragment();
+            getSupportActionBar().setTitle("Feedback");
             loadFragment(feedbacks);
         }
     }
+
 
     @Override
     public void onBackPressed()
@@ -369,11 +363,14 @@ public class MainActivity  extends AppCompatActivity  {
         builder.show();
     }
     void logoutAction() {
+        Intent intent = new Intent(this, FeedbacksNotificationService.class);
+        stopService(intent);
         CFAlertDialog.Builder builder = new CFAlertDialog.Builder(MainActivity.this)
                 .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
                 .setTitle("Are you sure?")
                 .setMessage("Logout and clear your local data?")
                 .addButton("YES", -1, -1, CFAlertDialog.CFAlertActionStyle.NEGATIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+
                     SharedPreferences settings = (SharedPreferences) getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                     settings.edit().clear().commit();
                     dialog.dismiss();
@@ -384,6 +381,9 @@ public class MainActivity  extends AppCompatActivity  {
                 });
 
         builder.show();
+
+
+
     }
 
 }

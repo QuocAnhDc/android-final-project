@@ -501,7 +501,8 @@ public class FirebaseManager {
     public void listenFeedBackAdded(FirebaseCallBack.FeedBackCallBack callBack){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference feedbackDtb = database.getReference(FEEDBACK_CHILD);
-        feedbackDtb.addChildEventListener(new ChildEventListener() {
+
+         feedbackDtb.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Feedback fb = snapshot.getValue(Feedback.class);
