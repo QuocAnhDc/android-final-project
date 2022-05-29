@@ -58,7 +58,7 @@ public class FeedbacksNotificationService extends Service {
         //return super.oấyStartCommand(intent, flags, startId);
        // Log.e("OnCammand", "start foreground");
         User user = getSavedInfo();
-        if(user != null && !user.getUsername().equals("noUser")){
+        if(user != null && !user.getUsername().equals("noUser") && !user.getRole().equals("Admin")){
             feedbackAdded(user);
         }
         else{
