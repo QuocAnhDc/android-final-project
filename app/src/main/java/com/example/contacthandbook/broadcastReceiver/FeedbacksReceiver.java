@@ -23,6 +23,7 @@ public class FeedbacksReceiver extends BroadcastReceiver {
         if(intent_value != null && intent_value.equals(context.getString(R.string.feedback_intent_value))){
             Intent mainActivity = new Intent(context, MainActivity.class);
             mainActivity.putExtra(context.getString(R.string.feedback_intent), intent_value);
+            mainActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(mainActivity);
         }
     }

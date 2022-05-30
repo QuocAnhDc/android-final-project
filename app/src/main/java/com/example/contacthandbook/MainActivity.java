@@ -126,14 +126,21 @@ public class MainActivity  extends AppCompatActivity  {
     protected void onStart() {
         super.onStart();
 
-        Intent feedbackIntent = getIntent();
-        String intent_value = feedbackIntent.getStringExtra(getString(R.string.feedback_intent));
+        Intent intent = getIntent();
+        String intent_value = intent.getStringExtra(getString(R.string.feedback_intent));
+        String intent_notification_value = intent.getStringExtra(getString(R.string.notification_intent_name));
 
         if(intent_value != null && intent_value.equals(getString(R.string.feedback_intent_value))){
-            //Log.e("INTENT FB", intent_value);
+
             Fragment feedbacks = new FeedbackFragment();
             getSupportActionBar().setTitle("Feedback");
             loadFragment(feedbacks);
+        }
+
+        if(intent_notification_value != null && intent_notification_value.equals(getString(R.string.notification_intent_value))){
+            Fragment notification = new NotificationFragment();
+            getSupportActionBar().setTitle("Notifications");
+            loadFragment(notification);
         }
     }
 

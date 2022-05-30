@@ -57,6 +57,10 @@ public interface FirebaseCallBack {
         void onCallback(boolean success);
     }
 
+    interface  NotificationCallBack {
+        void onCallback(Notification notification);
+    }
+
     interface AllNotificationCallBack {
         void onCallback(List<Notification> notifications);
     }

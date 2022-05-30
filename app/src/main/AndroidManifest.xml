@@ -4,9 +4,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/school"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/school"
         android:supportsRtl="true"
         android:theme="@style/Theme.ContactHandbook">
         <activity android:name=".fragment.classes.ClassDetailActivity"></activity>
@@ -34,6 +34,8 @@
             android:exported="false"/>
 
         <receiver android:name=".broadcastReceiver.FeedbacksReceiver"
+            android:exported="false"/>
+        <receiver android:name=".broadcastReceiver.NotificationReceiver"
             android:exported="false"/>
 
     </application>

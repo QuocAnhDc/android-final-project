@@ -56,14 +56,14 @@ public class FeedbackFragment  extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user = getSavedInfo();
-        firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
-            @Override
-            public void onCallback(String classNameParam) {
-                className= classNameParam;
-            }
-        });
-
-
+        if(user!= null){
+            firebaseManager.getClassName(user.getUsername(), user.getRole(), new FirebaseCallBack.ClassNameCallback() {
+                @Override
+                public void onCallback(String classNameParam) {
+                    className= classNameParam;
+                }
+            });
+        }
     }
 
     @Override

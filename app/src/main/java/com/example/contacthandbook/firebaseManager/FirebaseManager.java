@@ -399,6 +399,37 @@ public class FirebaseManager {
 
 
     // ----Notification child
+    public void listenNotificationAdded(FirebaseCallBack.NotificationCallBack callBack){
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference notiRef = firebaseDatabase.getReference(NOTIFICATION_CHILD);
+        notiRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Notification notification = snapshot.getValue(Notification.class);
+                callBack.onCallback(notification);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
     public void addMessage(Notification notification, FirebaseCallBack.AddMessageCallBack callBack ) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -425,7 +456,7 @@ public class FirebaseManager {
                 List<Notification> notifications = new ArrayList<>();
                 for (DataSnapshot notiSnapshot: snapshot.getChildren()) {
                     Notification notification = notiSnapshot.getValue(Notification.class);
-                    if (notification.getDesitnation()== destination || destination == NotifyDestination.ALL )
+                    if (notification.getDesitnation()== destination || destination == NotifyDestination.ALL || notification.getDesitnation().toString().equals("ALL"))
                     {
                         notifications.add(notification);
                     }
