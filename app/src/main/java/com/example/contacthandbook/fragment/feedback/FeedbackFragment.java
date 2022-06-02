@@ -256,8 +256,22 @@ public class FeedbackFragment  extends Fragment {
             CommonFunction.showCommonAlert(getContext(), "Message Sent", "OK");
             loadList();
         } else {
-            CommonFunction.showCommonAlert(getContext(), "Something went wrong", "Let me check");
+            CommonFunction.showCommonAlert(getContext(), "Something were wrong", "Let me check");
         }
+    }
+
+    void deleteFeedback(Feedback feedback){
+        firebaseManager.deleteFeedback(feedback, new FirebaseCallBack.SuccessCallBack() {
+            @Override
+            public void onCallback(boolean success) {
+                if(success){
+                    resultAddAction(true);
+                }
+                else{
+                    resultAddAction(false);
+                }
+            }
+        });
     }
 
 
@@ -301,14 +315,29 @@ public class FeedbackFragment  extends Fragment {
                             public void OnItemClickListener(View view, int position) {
 
                             }
-
                             @Override
                             public void OnItemLongClickListener(View view, int position) {
+                                Feedback feedback = arrayData.get(position);
+                                if(feedback.getSender().equals(user.getUsername())){
+                                    CFAlertDialog.Builder builder = new CFAlertDialog.Builder(getContext())
+                                            .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
+                                            .setTitle("Your Feedback")
+                                            .setMessage("")
+                                            .addButton("Delete", -1, -1, CFAlertDialog.CFAlertActionStyle.NEGATIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+                                                dialog.dismiss();
+                                                deleteFeedback(feedback);
 
+                                            })
+                                            .addButton("CANCEL", -1, -1, CFAlertDialog.CFAlertActionStyle.DEFAULT, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+                                                dialog.dismiss();
+                                            });
+                                    builder.show();
+                                }
                             }
                         });
                         recyclerView.setAdapter(adapter);
                         hud.dismiss();
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }

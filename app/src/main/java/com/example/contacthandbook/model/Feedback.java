@@ -8,18 +8,38 @@ public class Feedback {
     String reciver;
     String sender;
     String dateStr = "";
+    String id;
 
     Date date;
     public Feedback(){
 
     }
 
-    public Feedback(String title,String content,String reciver,String sender){
+
+
+    public Feedback(String id, String title, String content, String reciver, String sender){
+        this.id = id;
         this.title = title;
         this.content = content;
         this.reciver = reciver;
         this.sender = sender;
         this.dateStr = new Date().toString();
+    }
+
+    public Feedback( String title,String content,String reciver,String sender){
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.reciver = reciver;
+        this.sender = sender;
+        this.dateStr = new Date().toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getContent(){return content;}

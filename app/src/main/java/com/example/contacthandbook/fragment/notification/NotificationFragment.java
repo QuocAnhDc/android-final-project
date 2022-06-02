@@ -20,6 +20,7 @@ import com.example.contacthandbook.CommonFunction;
 import com.example.contacthandbook.R;
 import com.example.contacthandbook.firebaseManager.FirebaseCallBack;
 import com.example.contacthandbook.firebaseManager.FirebaseManager;
+import com.example.contacthandbook.model.Feedback;
 import com.example.contacthandbook.model.Notification;
 import com.example.contacthandbook.model.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,6 +29,7 @@ import com.example.contacthandbook.model.NotifyDestination;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -64,14 +66,22 @@ public class NotificationFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAddMessage();
+                showAddMessage(false, new Notification());
             }
         });
         loadList();
 
     }
 
-    void showAddMessage() {
+    void showAddMessage(boolean isEdit, Notification nt) {
+        String buttonTitle = "";
+        if(isEdit){
+            buttonTitle = "Edit";
+        }
+        else{
+            buttonTitle = "Send";
+        }
+
         View dialogLayout = LayoutInflater.from(getContext()).inflate(R.layout.add_notification_dialog, null);
         Spinner spinnerDestination = dialogLayout.findViewById(R.id.spinner_destination);
 
@@ -80,17 +90,26 @@ public class NotificationFragment extends Fragment {
                 (getContext(), android.R.layout.simple_spinner_dropdown_item, destinations);
         spinnerDestination.setAdapter(spinnerArrayAdapter);
 
+        //set text for view
         TextInputEditText titleEditText = dialogLayout.findViewById(R.id.title_editText);
         TextInputEditText messageEditText = dialogLayout.findViewById(R.id.message_editText);
+        titleEditText.setText(nt.getTitle());
+        messageEditText.setText(nt.getContent());
+        int index = destinations.indexOf(nt.getDesitnation().toString().toUpperCase());
+        spinnerDestination.setSelection(index);
 
+        //show dialog for edit or create new message
         CFAlertDialog.Builder builder = new CFAlertDialog.Builder(getContext())
                 .setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT)
                 .setHeaderView(dialogLayout)
-                .addButton("SEND", -1, -1, CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+                .addButton(buttonTitle, -1, -1, CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
                     if (!titleEditText.getText().toString().equals("") && !messageEditText.getText().toString().equals("")) {
                         String destination = spinnerDestination.getSelectedItem().toString();
-                        Notification notification = new Notification(NotifyDestination.valueOf(destination), titleEditText.getText().toString(), messageEditText.getText().toString());
-                        firebaseManager.addMessage(notification, new FirebaseCallBack.AddMessageCallBack() {
+                        //Notification notification = new Notification(NotifyDestination.valueOf(destination), titleEditText.getText().toString(), messageEditText.getText().toString());
+                        nt.setTitle(titleEditText.getText().toString());
+                        nt.setContent(messageEditText.getText().toString());
+                        nt.setDesitnation(NotifyDestination.valueOf(destination));
+                        firebaseManager.addMessage(nt, new FirebaseCallBack.AddMessageCallBack() {
                             @Override
                             public void onCallback(boolean success) {
                                 if (success) {
@@ -149,11 +168,31 @@ public class NotificationFragment extends Fragment {
 
                     @Override
                     public void OnItemLongClickListener(View view, int position) {
+                        if(user.getRole().equals("Admin")){
+                            CFAlertDialog.Builder builder = new CFAlertDialog.Builder(getContext())
+                                    .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
+                                    .setTitle("Your Notification")
+                                    .setMessage("")
+                                    .addButton("Edit", -1, -1, CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+                                        dialog.dismiss();
+                                        showAddMessage(true, notifications.get(position));
 
+                                    })
+                                    .addButton("Delete", -1, -1, CFAlertDialog.CFAlertActionStyle.NEGATIVE, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+                                        dialog.dismiss();
+                                        deleteNotification(notifications.get(position));
+
+                                    })
+                                    .addButton("CANCEL", -1, -1, CFAlertDialog.CFAlertActionStyle.DEFAULT, CFAlertDialog.CFAlertActionAlignment.JUSTIFIED, (dialog, which) -> {
+                                        dialog.dismiss();
+                                    });
+                            builder.show();
+                        }
                     }
                 });
                 recyclerView.setAdapter(adapter);
                 hud.dismiss();
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -164,6 +203,25 @@ public class NotificationFragment extends Fragment {
         user.setRole(sharedPref.getString("role", "student"));
         return  user;
     }
+
+    void result(boolean success) {
+        if (success) {
+            CommonFunction.showCommonAlert(getContext(), "Message Sent", "OK");
+            loadList();
+        } else {
+            CommonFunction.showCommonAlert(getContext(), "Something were wrong", "Let me check");
+        }
+    }
+
+    public void deleteNotification(Notification nt){
+        firebaseManager.deleteNotification(nt, new FirebaseCallBack.SuccessCallBack() {
+            @Override
+            public void onCallback(boolean success) {
+                result(success);
+            }
+        });
+    }
+
 
 
 }

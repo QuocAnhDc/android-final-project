@@ -4,17 +4,37 @@ import java.util.Date;
 
 public class Notification {
     NotifyDestination desitnation = NotifyDestination.ALL;
+    String id;
     String title = "";
     String content = "";
     String dateStr = "";
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     Date date;
 
-    public Notification() {}
+    public Notification() {
+        this.dateStr = new Date().toString();
+    }
     public Notification(NotifyDestination notifyDestination, String title, String content) {
         this.desitnation = notifyDestination;
         this.title = title;
         this.content = content;
         this.dateStr = new Date().toString();
+    }
+
+    public Notification(String id, NotifyDestination notifyDestination, String title, String content) {
+        this.desitnation = notifyDestination;
+        this.title = title;
+        this.content = content;
+        this.dateStr = new Date().toString();
+        this.id = id;
     }
 
 

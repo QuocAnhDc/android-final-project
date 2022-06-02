@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class FirebaseManager {
     private static final String TAG = "Firebase manager";
@@ -399,6 +400,23 @@ public class FirebaseManager {
 
 
     // ----Notification child
+    public void deleteNotification(Notification nt, FirebaseCallBack.SuccessCallBack callBack){
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference ntRef = firebaseDatabase.getReference(NOTIFICATION_CHILD).child(nt.getId());
+        ntRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ntRef.removeValue();
+                callBack.onCallback(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callBack.onCallback(false);
+            }
+        });
+    }
+
     public void listenNotificationAdded(FirebaseCallBack.NotificationCallBack callBack){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference notiRef = firebaseDatabase.getReference(NOTIFICATION_CHILD);
@@ -433,7 +451,12 @@ public class FirebaseManager {
 
     public void addMessage(Notification notification, FirebaseCallBack.AddMessageCallBack callBack ) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(NOTIFICATION_CHILD).child(new Date().toString());
+        if(notification.getId() == null || notification.getId().equals("")){
+            UUID uid = UUID.randomUUID();
+            notification.setId(uid.toString());
+        }
+
+        DatabaseReference myRef = database.getReference(NOTIFICATION_CHILD).child(notification.getId());
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -515,7 +538,9 @@ public class FirebaseManager {
 
     public void addFeedBack( Feedback feedBack, FirebaseCallBack.AddMessageCallBack callBack ) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(FEEDBACK_CHILD).child(new Date().toString());
+        UUID uid = UUID.randomUUID();
+        feedBack.setId(uid.toString());
+        DatabaseReference myRef = database.getReference(FEEDBACK_CHILD).child(uid.toString());
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -528,6 +553,26 @@ public class FirebaseManager {
             }
         });
     }
+
+    public void deleteFeedback(Feedback feedback, FirebaseCallBack.SuccessCallBack callBack){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myref = database.getReference(FEEDBACK_CHILD).child(feedback.getId());
+        myref.addListenerForSingleValueEvent(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot snapshot) {
+               Feedback fb = snapshot.getValue(Feedback.class);
+               myref.removeValue();
+
+               callBack.onCallback(true);
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError error) {
+                callBack.onCallback(false);
+           }
+       });
+    }
+
 
     public void listenFeedBackAdded(FirebaseCallBack.FeedBackCallBack callBack){
         FirebaseDatabase database = FirebaseDatabase.getInstance();
